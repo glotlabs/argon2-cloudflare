@@ -12,7 +12,7 @@ npm install
 npm run dev
 
 #### Deploy to cloudflare
-npm deploy
+npm run deploy
 
 
 ## Api
