@@ -21,7 +21,6 @@ dependencies = [
  "argon2",
  "getrandom",
  "serde",
- "serde_json",
  "worker",
 ]
 

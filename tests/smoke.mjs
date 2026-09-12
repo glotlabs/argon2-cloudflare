@@ -11,6 +11,9 @@ async function post(path, body, status = 200) {
   });
   const text = await response.text();
   assert.equal(response.status, status, text);
+  if (status === 200) {
+    assert.equal(response.headers.get("content-type"), "application/json");
+  }
   return status === 200 ? JSON.parse(text) : text;
 }
 

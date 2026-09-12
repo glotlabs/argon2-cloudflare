@@ -17,7 +17,7 @@ async fn main(req: Request, _env: Env, _ctx: Context) -> worker::Result<Response
     };
 
     match result {
-        Ok(body) => Response::ok(body),
+        Ok(response) => Ok(response),
         Err(err) => err.to_response(),
     }
 }
@@ -45,7 +45,7 @@ pub struct HashResponse {
     pub hash: String,
 }
 
-async fn hash_handler(mut req: Request) -> Result<String, Error> {
+async fn hash_handler(mut req: Request) -> Result<Response, Error> {
     let hash_req: HashRequest = req
         .json()
         .await
@@ -56,7 +56,7 @@ async fn hash_handler(mut req: Request) -> Result<String, Error> {
     let hash_response = HashResponse {
         hash: password_hash,
     };
-    serde_json::to_string(&hash_response).map_err(|err| Error::EncodeBody(err.to_string()))
+    Response::from_json(&hash_response).map_err(|err| Error::EncodeBody(err.to_string()))
 }
 
 fn hash(password: &str, options: Option<HashOptions>) -> Result<String, Error> {
@@ -96,7 +96,7 @@ pub struct VerifyResponse {
     pub matches: bool,
 }
 
-async fn verify_handler(mut req: Request) -> Result<String, Error> {
+async fn verify_handler(mut req: Request) -> Result<Response, Error> {
     let options: VerifyRequest = req
         .json()
         .await
@@ -104,7 +104,7 @@ async fn verify_handler(mut req: Request) -> Result<String, Error> {
 
     let matches = verify(&options)?;
     let verify_response = VerifyResponse { matches };
-    serde_json::to_string(&verify_response).map_err(|err| Error::EncodeBody(err.to_string()))
+    Response::from_json(&verify_response).map_err(|err| Error::EncodeBody(err.to_string()))
 }
 
 fn verify(options: &VerifyRequest) -> Result<bool, Error> {
