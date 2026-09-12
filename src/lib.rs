@@ -1,5 +1,5 @@
 use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
+    password_hash::{phc::PasswordHash, PasswordHasher, PasswordVerifier},
     Argon2, Params, Version,
 };
 use worker::Context;
@@ -60,8 +60,6 @@ async fn hash_handler(mut req: Request) -> Result<String, Error> {
 }
 
 fn hash(password: &str, options: Option<HashOptions>) -> Result<String, Error> {
-    let salt = SaltString::generate(&mut OsRng);
-
     let argon2 = match options {
         Some(opts) => {
             let params = Params::new(opts.memory_cost, opts.time_cost, opts.parallelism, None)
@@ -78,7 +76,7 @@ fn hash(password: &str, options: Option<HashOptions>) -> Result<String, Error> {
     }?;
 
     argon2
-        .hash_password(password.as_bytes(), &salt)
+        .hash_password(password.as_bytes())
         .map(|password_hash| password_hash.to_string())
         .map_err(|err| Error::Hash(err.to_string()))
 }
@@ -119,7 +117,7 @@ fn verify(options: &VerifyRequest) -> Result<bool, Error> {
         Ok(()) => Ok(true),
 
         Err(err) => match err {
-            argon2::password_hash::Error::Password => Ok(false),
+            argon2::password_hash::Error::PasswordInvalid => Ok(false),
             _ => Err(Error::Verify(err.to_string())),
         },
     }

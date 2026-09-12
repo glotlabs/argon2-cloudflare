@@ -3,10 +3,11 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
+		"test": "node tests/smoke.mjs",
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy"
 	},
 	"devDependencies": {
-		"wrangler": "^4.5.0"
+		"wrangler": "^4.131.1"
 	}
 }

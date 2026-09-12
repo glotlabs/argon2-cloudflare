@@ -5,11 +5,17 @@ Can be used via a service binding.
 
 ## Dev
 
+Requires Node.js 22 or newer and Rust with the `wasm32-unknown-unknown` target
+(`rustup target add wasm32-unknown-unknown`).
+
 #### Install deps
 npm install
 
 #### Dev server
 npm run dev
+
+#### Test
+With the dev server running, run `npm test` in another terminal.
 
 #### Deploy to cloudflare
 npm run deploy
